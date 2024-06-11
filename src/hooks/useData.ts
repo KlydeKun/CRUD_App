@@ -10,7 +10,7 @@ export interface Laptop {
   ram: string;
   cpu: string;
   screenSize: string;
-  stocks: number;
+  stocks: string;
 }
 
 const emptyLaptop: Laptop = {
@@ -20,7 +20,7 @@ const emptyLaptop: Laptop = {
   ram: "",
   cpu: "",
   screenSize: "",
-  stocks: 0,
+  stocks: "",
 };
 
 const useData = () => {
@@ -63,7 +63,7 @@ const useData = () => {
   const saveProduct = async () => {
     setSubmitted(true);
 
-    if (product.brand.trim()) {
+    if (product.brand.trim() && product.model.trim() && product.ram.trim() && product.cpu.trim() && product.screenSize.trim() && product.stocks.toString()) {
       let _laptops = [...laptops];
       const _laptop = { ...product };
 

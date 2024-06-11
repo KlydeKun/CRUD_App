@@ -80,15 +80,14 @@ const DataTableList = () => {
         <DataTable
           ref={data}
           value={laptops}
-          // editMode="row"
+          editMode="row"
           dataKey="id"
-          // onRowEditComplete={onRowEditComplete}
           paginator
           paginatorLeft={paginatorLeft}
           rows={5}
           tableStyle={{ minWidth: "50rem" }}
         >
-          <Column field="id" header="ID"></Column>
+          <Column field="id" header="ID" />
           {columns.map((column) => (
             <Column key={column.field} field={column.field} editor={(options) => textEditor(options)} header={column.header} />
           ))}
@@ -111,10 +110,11 @@ const DataTableList = () => {
         footer={productDialogFooter}
         onHide={hideDialog}
       >
-        <div className="field">
+        <div className="field flex flex-col gap-2">
           <label htmlFor="brand" className="font-bold">
             Brand
           </label>
+
           <InputText
             id="brand"
             value={product.brand}
@@ -127,8 +127,9 @@ const DataTableList = () => {
             <small className="p-error">Name is required.</small>
           )}
         </div>
-        <div className="field">
-          <label htmlFor="brand" className="font-bold">
+
+        <div className="field flex flex-col gap-2 mt-2">
+          <label htmlFor="model" className="font-bold">
             Model
           </label>
           <InputText
@@ -143,12 +144,13 @@ const DataTableList = () => {
             <small className="p-error">Name is required.</small>
           )}
         </div>
-        <div className="field">
-          <label htmlFor="brand" className="font-bold">
+
+        <div className="field flex flex-col gap-2 mt-2">
+          <label htmlFor="ram" className="font-bold">
             RAM
           </label>
           <InputText
-            id="model"
+            id="ram"
             value={product.ram}
             onChange={(e) => onInputChange(e, "ram")}
             required
@@ -156,6 +158,57 @@ const DataTableList = () => {
             className={classNames({ "p-invalid": submitted && !product.ram })}
           />
           {submitted && !product.ram && (
+            <small className="p-error">Name is required.</small>
+          )}
+        </div>
+
+        <div className="field flex flex-col gap-2 mt-2">
+          <label htmlFor="cpu" className="font-bold">
+            CPU
+          </label>
+          <InputText
+            id="cpu"
+            value={product.cpu}
+            onChange={(e) => onInputChange(e, "cpu")}
+            required
+            autoFocus
+            className={classNames({ "p-invalid": submitted && !product.cpu })}
+          />
+          {submitted && !product.cpu && (
+            <small className="p-error">Name is required.</small>
+          )}
+        </div>
+
+        <div className="field flex flex-col gap-2 mt-2">
+          <label htmlFor="screenSize" className="font-bold">
+            Screen Size
+          </label>
+          <InputText
+            id="screenSize"
+            value={product.screenSize}
+            onChange={(e) => onInputChange(e, "screenSize")}
+            required
+            autoFocus
+            className={classNames({ "p-invalid": submitted && !product.screenSize })}
+          />
+          {submitted && !product.screenSize && (
+            <small className="p-error">Name is required.</small>
+          )}
+        </div>
+
+        <div className="field flex flex-col gap-2 mt-2">
+          <label htmlFor="stocks" className="font-bold">
+            Stocks
+          </label>
+          <InputText
+            id="stocks"
+            value={product.stocks}
+            onChange={(e) => onInputChange(e, "stocks")}
+            required
+            autoFocus
+            className={classNames({ "p-invalid": submitted && !product.stocks })}
+          />
+          {submitted && !product.stocks && (
             <small className="p-error">Name is required.</small>
           )}
         </div>
