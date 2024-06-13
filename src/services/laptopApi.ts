@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Laptop } from "../hooks/useData";
 
 class laptopServices {
@@ -14,6 +14,25 @@ class laptopServices {
   async editLaptops(id: string, laptop: Laptop): Promise<Laptop> {
     const response = await this.http.put(`/laptops/${id}`, laptop);
     return response.data;
+  }
+
+  async deleteLaptops(id: string) {
+    // const response = await this.http.delete(`/laptops/${id}`);
+    // return response.data;
+    try {
+      const response = await this.http.delete(`/laptops/${id}`);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 404) {
+        console.error(`Laptop with ID ${id} is not found.`);
+      } else {
+        console.error(
+          `Error removing laptop: ${axiosError.response?.status} - ${axiosError.response?.statusText}`
+        );
+      }
+      throw error;
+    }
   }
 }
 

@@ -27,9 +27,11 @@ const useData = () => {
   const [laptops, setLaptops] = useState<Laptop[]>([]);
   const [product, setProduct] = useState<Laptop>(emptyLaptop);
   const [productDialog, setProductDialog] = useState<boolean>(false);
+  const [deleteProductDialog, setDeleteProductDialog] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const toast = useRef<Toast>(null);
+
   const data = useRef<DataTable<Laptop[]>>(null);
+  const toast = useRef<Toast>(null);
 
   useEffect(() => {
     loadLaptops();
@@ -40,15 +42,68 @@ const useData = () => {
     const laptops = await laptopService.getLaptops();
     setLaptops(laptops);
   };
+  
+  const modifyProduct = async () => {
+    setSubmitted(true);
+    if (
+      product.brand.trim() &&
+      product.model.trim() &&
+      product.ram.trim() &&
+      product.cpu.trim() &&
+      product.screenSize.trim() &&
+      product.stocks.toString()
+    ) {
+      let _laptops = [...laptops];
+      const _laptop = { ...product };
 
-  const modifyLaptops = async (id: string, laptop: Laptop) => {
-    const updatedLaptop = await laptopService.editLaptops(id, laptop);
-    setLaptops((prevLaptops) =>
-      prevLaptops.map((i) => (i.id === id ? updatedLaptop : i))
-    );
+      if (product.id) {
+        const updatedLaptop = await laptopService.editLaptops(_laptop.id, _laptop);
+        _laptops = _laptops.map((i) =>
+          i.id === _laptop.id ? updatedLaptop : i);
+
+        
+        toast.current?.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Product Updated",
+          life: 3000,
+        });
+      } else {
+        _laptop.id = createId();
+        _laptops.push(_laptop);
+        toast.current?.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Product Created",
+          life: 3000,
+        });
+      }
+      setLaptops(_laptops);
+      setProductDialog(false);
+      setProduct(emptyLaptop);
+    }
   };
-  // ============================ CONTROLLERS ============================
 
+  const deleteLaptop = async (id: string) => {
+    try {
+      await laptopService.deleteLaptops(id);
+      setLaptops(prevLaptop =>
+        prevLaptop.filter((laptop) => laptop.id !== id)
+      );
+      setDeleteProductDialog(false);
+      setProduct(emptyLaptop);
+      toast.current?.show({
+        severity: "success",
+        summary: "Successful",
+        detail: "Product Deleted!",
+        life: 3000,
+      });
+    } catch (error) {
+      console.error("Error removing laptop", error);
+    }
+  };
+
+  // ============================ CONTROLLERS ============================
 
   const editLaptop = (laptop: Laptop) => {
     setProduct({ ...laptop });
@@ -60,41 +115,13 @@ const useData = () => {
     setProductDialog(false);
   };
 
-  const saveProduct = async () => {
-    setSubmitted(true);
+  const hideDeleteProductDialog = () => {
+    setDeleteProductDialog(false);
+  };
 
-    if (product.brand.trim() && product.model.trim() && product.ram.trim() && product.cpu.trim() && product.screenSize.trim() && product.stocks.toString()) {
-      let _laptops = [...laptops];
-      const _laptop = { ...product };
-
-      if (product.id) {
-        const updatedLaptop = await laptopService.editLaptops(
-          _laptop.id,
-          _laptop
-        );
-        _laptops = _laptops.map((i) =>
-          i.id === _laptop.id ? updatedLaptop : i
-        );
-        toast.current?.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Laptop Updated",
-          life: 3000,
-        });
-      } else {
-        _laptop.id = createId();
-        _laptops.push(_laptop);
-        toast.current?.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Laptop Created",
-          life: 3000,
-        });
-      }
-      setLaptops(_laptops);
-      setProductDialog(false);
-      setProduct(emptyLaptop);
-    }
+  const confirmDeleteProduct = (product: Laptop) => {
+    setProduct(product);
+    setDeleteProductDialog(true);
   };
 
   // const findIndexById = (id: string) => {
@@ -139,16 +166,22 @@ const useData = () => {
   return {
     data,
     laptops,
+    emptyLaptop,
+    setLaptops,
     toast,
     submitted,
     product,
     setProduct,
     productDialog,
     editLaptop,
-    modifyLaptops,
     hideDialog,
-    saveProduct,
+    modifyProduct,
     onInputChange,
+    deleteLaptop,
+    deleteProductDialog,
+    setDeleteProductDialog,
+    hideDeleteProductDialog,
+    confirmDeleteProduct,
   };
 };
 

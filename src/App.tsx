@@ -6,6 +6,6 @@ function App() {
       <DataTableList />
     </>
   );
-} 
+}
 
 export default App;

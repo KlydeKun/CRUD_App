@@ -8,11 +8,6 @@ import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
 import { Toast } from "primereact/toast";
 
-// interface LaptopListProps {
-//   items: Laptop[];
-//   onRowEditLaptops: (id: string, laptop: Laptop) => void;
-// }
-
 const columns = [
   { field: "brand", header: "Brand" },
   { field: "model", header: "Model" },
@@ -22,6 +17,7 @@ const columns = [
   { field: "stocks", header: "Stocks" },
 ];
 
+// {onDeleteLaptop}: Props
 const DataTableList = () => {
   const {
     laptops,
@@ -32,9 +28,31 @@ const DataTableList = () => {
     productDialog,
     hideDialog,
     editLaptop,
-    saveProduct,
+    modifyProduct,
     onInputChange,
+    deleteProductDialog,
+    hideDeleteProductDialog,
+    confirmDeleteProduct,
+    
+    deleteLaptop
   } = useData();
+
+  const deleteProductDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        outlined
+        onClick={hideDeleteProductDialog}
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        severity="danger"
+        onClick={() => deleteLaptop(product.id)}
+      />
+    </React.Fragment>
+  );
 
   const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
 
@@ -61,7 +79,13 @@ const DataTableList = () => {
           className="mr-2"
           onClick={() => editLaptop(rowData)}
         />
-        <Button icon="pi pi-trash" rounded outlined />
+        <Button
+          icon="pi pi-trash"
+          rounded
+          outlined
+          severity="danger"
+          onClick={() => confirmDeleteProduct(rowData)}
+        />
       </div>
     );
   };
@@ -69,7 +93,7 @@ const DataTableList = () => {
   const productDialogFooter = (
     <>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
+      <Button label="Save" icon="pi pi-check" onClick={modifyProduct} />
     </>
   );
 
@@ -89,7 +113,12 @@ const DataTableList = () => {
         >
           <Column field="id" header="ID" />
           {columns.map((column) => (
-            <Column key={column.field} field={column.field} editor={(options) => textEditor(options)} header={column.header} />
+            <Column
+              key={column.field}
+              field={column.field}
+              editor={(options) => textEditor(options)}
+              header={column.header}
+            />
           ))}
           {/* Example Syntax 
             <Column
@@ -189,7 +218,9 @@ const DataTableList = () => {
             onChange={(e) => onInputChange(e, "screenSize")}
             required
             autoFocus
-            className={classNames({ "p-invalid": submitted && !product.screenSize })}
+            className={classNames({
+              "p-invalid": submitted && !product.screenSize,
+            })}
           />
           {submitted && !product.screenSize && (
             <small className="p-error">Name is required.</small>
@@ -206,10 +237,34 @@ const DataTableList = () => {
             onChange={(e) => onInputChange(e, "stocks")}
             required
             autoFocus
-            className={classNames({ "p-invalid": submitted && !product.stocks })}
+            className={classNames({
+              "p-invalid": submitted && !product.stocks,
+            })}
           />
           {submitted && !product.stocks && (
             <small className="p-error">Name is required.</small>
+          )}
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={deleteProductDialog}
+        style={{ width: "32rem" }}
+        breakpoints={{ "960px": "55vw", "641px": "70vw" }}
+        header="Confirm"
+        modal
+        footer={deleteProductDialogFooter}
+        onHide={hideDeleteProductDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: "2rem" }}
+          />
+          {product && (
+            <span>
+              Are you sure you want to delete <b>{product.model}</b>?
+            </span>
           )}
         </div>
       </Dialog>
