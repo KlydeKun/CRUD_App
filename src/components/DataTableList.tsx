@@ -7,6 +7,8 @@ import React from "react";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
 import { Toast } from "primereact/toast";
+import { Toolbar } from "primereact/toolbar";
+import AddData from "./AddData";
 
 const columns = [
   { field: "brand", header: "Brand" },
@@ -33,8 +35,11 @@ const DataTableList = () => {
     deleteProductDialog,
     hideDeleteProductDialog,
     confirmDeleteProduct,
-    
-    deleteLaptop
+    deleteLaptop,
+    openNew,
+    addLaptopDialog,
+    hideAddDialog
+
   } = useData();
 
   const deleteProductDialogFooter = (
@@ -97,10 +102,21 @@ const DataTableList = () => {
     </>
   );
 
+  const leftToolbarTemplate = () => {
+    return (
+      <div>
+        <Button label="New" icon="pi pi-plus" severity="success" onClick={openNew} />
+      </div>
+    )
+  }
+
   return (
     <>
       <Toast ref={toast} />
       <div className="card">
+        <Toolbar className="mb-4" left={leftToolbarTemplate}
+        >  
+        </Toolbar>
         <DataTable
           ref={data}
           value={laptops}
@@ -120,12 +136,6 @@ const DataTableList = () => {
               header={column.header}
             />
           ))}
-          {/* Example Syntax 
-            <Column
-            field="brand"
-            editor={(options) => textEditor(options)}
-            header="Brand"
-          ></Column> */}
           <Column header="Action" body={ActionBodyTemplate}></Column>
         </DataTable>
       </div>
@@ -245,6 +255,18 @@ const DataTableList = () => {
             <small className="p-error">Name is required.</small>
           )}
         </div>
+      </Dialog>
+      <Dialog
+        visible={addLaptopDialog}
+        style={{ width: "33rem" }}
+        breakpoints={{ "960px": "55vw", "641px": "70vw" }}
+        header="Laptop Details"
+        modal
+        className="p-fluid"
+        footer={productDialogFooter}
+        onHide={hideAddDialog}
+      >
+        <AddData />
       </Dialog>
 
       <Dialog

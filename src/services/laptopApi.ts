@@ -11,14 +11,18 @@ class laptopServices {
     return response.data;
   }
 
+  async AddLaptops(laptop: Laptop) {
+    const response = await this.http.post("/laptops", laptop);
+    return response.data;
+
+  }
+
   async editLaptops(id: string, laptop: Laptop): Promise<Laptop> {
     const response = await this.http.put(`/laptops/${id}`, laptop);
     return response.data;
   }
 
   async deleteLaptops(id: string) {
-    // const response = await this.http.delete(`/laptops/${id}`);
-    // return response.data;
     try {
       const response = await this.http.delete(`/laptops/${id}`);
       return response.data;

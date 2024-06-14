@@ -27,6 +27,8 @@ const useData = () => {
   const [laptops, setLaptops] = useState<Laptop[]>([]);
   const [product, setProduct] = useState<Laptop>(emptyLaptop);
   const [productDialog, setProductDialog] = useState<boolean>(false);
+
+  const [addLaptopDialog, setAddlaptopDialog] = useState<boolean>(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
@@ -42,6 +44,10 @@ const useData = () => {
     const laptops = await laptopService.getLaptops();
     setLaptops(laptops);
   };
+
+  const addLaptop = async () => {
+
+  }
   
   const modifyProduct = async () => {
     setSubmitted(true);
@@ -56,6 +62,32 @@ const useData = () => {
       let _laptops = [...laptops];
       const _laptop = { ...product };
 
+      // if (product.id) {
+      //   const updatedLaptop = await laptopService.editLaptops(_laptop.id, _laptop);
+      //   _laptops = _laptops.map((i) =>
+      //     i.id === _laptop.id ? updatedLaptop : i);
+
+        
+      //   toast.current?.show({
+      //     severity: "success",
+      //     summary: "Successful",
+      //     detail: "Product Updated",
+      //     life: 3000,
+      //   });
+      // } else {
+      //   _laptop.id = createId();
+      //   _laptops.push(_laptop);
+      //   toast.current?.show({
+      //     severity: "success",
+      //     summary: "Successful",
+      //     detail: "Product Created",
+      //     life: 3000,
+      //   });
+      // }
+      // setLaptops(_laptops);
+      // setProductDialog(false);
+      // setProduct(emptyLaptop);
+
       if (product.id) {
         const updatedLaptop = await laptopService.editLaptops(_laptop.id, _laptop);
         _laptops = _laptops.map((i) =>
@@ -66,15 +98,6 @@ const useData = () => {
           severity: "success",
           summary: "Successful",
           detail: "Product Updated",
-          life: 3000,
-        });
-      } else {
-        _laptop.id = createId();
-        _laptops.push(_laptop);
-        toast.current?.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Created",
           life: 3000,
         });
       }
@@ -115,6 +138,11 @@ const useData = () => {
     setProductDialog(false);
   };
 
+  const hideAddDialog = () => {
+    setSubmitted(false);
+    setAddlaptopDialog(false);
+  }
+
   const hideDeleteProductDialog = () => {
     setDeleteProductDialog(false);
   };
@@ -123,6 +151,11 @@ const useData = () => {
     setProduct(product);
     setDeleteProductDialog(true);
   };
+
+  const openNew = () => {
+    setSubmitted(false);
+    setAddlaptopDialog(true);
+  }
 
   // const findIndexById = (id: string) => {
   //   let index = -1;
@@ -151,17 +184,17 @@ const useData = () => {
     setProduct(_laptop);
   };
 
-  const createId = (): string => {
-    let id = "";
-    const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  // const createId = (): string => {
+  //   let id = "";
+  //   const chars =
+  //     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+  //   for (let i = 0; i < 5; i++) {
+  //     id += chars.charAt(Math.floor(Math.random() * chars.length));
+  //   }
 
-    return id;
-  };
+  //   return id;
+  // };
 
   return {
     data,
@@ -182,6 +215,11 @@ const useData = () => {
     setDeleteProductDialog,
     hideDeleteProductDialog,
     confirmDeleteProduct,
+
+    openNew,
+    addLaptop,
+    addLaptopDialog,
+    hideAddDialog
   };
 };
 
